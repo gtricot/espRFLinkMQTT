@@ -6,7 +6,7 @@
 // Serial and hardware configuration
 //********************************************************************************
 
-//#define ENABLE_SERIAL_DEBUG					// uncomment to enable debug on debugSerialTX
+#define ENABLE_SERIAL_DEBUG					// uncomment to enable debug on debugSerialTX
 
 #ifdef ENABLE_SERIAL_DEBUG
 	HardwareSerial & debugSerialTX = Serial;	// debugSerialTX is to show information for debugging - use Serial to write on hardware serial (ESP TX pin) 
@@ -17,16 +17,16 @@ HardwareSerial & rflinkSerialTX = Serial;		// rflinkSerialTX is used for command
 //SoftwareSerial softSerial(4, 2, false);		// software serial TX to RFLink on GPIO2/D4 ; software serial RX from GPIO4/D2 pin (unused) 
 //SoftwareSerial & rflinkSerialTX = softSerial;          
 
-#define DEFAULT_MEGA_RESET_PIN -1				// ESP pin connected to MEGA reset pin ; this is the default value and it can be changed from the web interface ; examples: -1 for none, 16 for GPIO16 (D0)
+#define DEFAULT_MEGA_RESET_PIN 2				// ESP pin connected to MEGA reset pin ; this is the default value and it can be changed from the web interface ; examples: -1 for none, 16 for GPIO16 (D0)
 #define DEFAULT_MEGA_AUTO_RESET_INTERVAL 0 * 60 * 1000	// Auto reset MEGA if no data is received during this period of time (in ms), 0 to disable ; this is the default value and it can be changed from the web interface
 
 //********************************************************************************
 // Wi-Fi parameters
 //********************************************************************************
 
-#define WIFI_SSID ""						// WiFi network SSID for ESP8266 to connect to
-#define WIFI_PASSWORD ""					// WiFi password for the network above
-#define HOSTNAME "espRFLinkMQTT" 			// Client name used for hostname, access point name, OTA, client ID for MQTT server
+#define WIFI_SSID "Livebox-D164"				// WiFi network SSID for ESP8266 to connect to
+#define WIFI_PASSWORD "WelcomeToLivebox-D164"	// WiFi password for the network above
+#define HOSTNAME "espRFLinkMQTT" 				// Client name used for hostname, access point name, OTA, client ID for MQTT server
 
 #define ENABLE_WIFI_SETTINGS_ONLINE_CHANGE
 /*
@@ -53,13 +53,13 @@ If defined (line uncommented):
 
 #define ENABLE_MQTT_SETTINGS_ONLINE_CHANGE		// If defined, the four settings below can be changed in the webinterface
 
-#define MQTT_SERVER "192.168.1.1"					// MQTT Server
+#define MQTT_SERVER "192.168.1.5"					// MQTT Server
 #define MQTT_PORT 1883								// MQTT server port
-#define MQTT_USER ""								// MQTT Server user
-#define MQTT_PASSWORD ""							// MQTT Server password   
+#define MQTT_USER "mqtt"							// MQTT Server user
+#define MQTT_PASSWORD "mqttpassword"				// MQTT Server password   
 #define MQTT_PUBLISH_TOPIC "rflink"					// MQTT topic to publish to (data from RFLink to MQTT)
 #define MQTT_RFLINK_CMD_TOPIC "rflink/cmd"			// MQTT topic to listen to (commands from MQTT to RFLink)
-#define MQTT_RETAIN_FLAG false						// If true, messages will be published with the retain flag
+#define MQTT_RETAIN_FLAG true						// If true, messages will be published with the retain flag
 #define MQTT_WILL_TOPIC "rflink/online"				// MQTT last will topic ; "rflink/status"
 #define MQTT_WILL_ONLINE "1"						// MQTT last will topic value online; "online"
 #define MQTT_WILL_OFFLINE "0"						// MQTT last will topic value offline; "offline"
@@ -70,6 +70,13 @@ If defined (line uncommented):
 
 
 #define MQTT_MEGA_RESET_TOPIC "rflink/mega_reset"	// MQTT topic whereto publish a 1s pulse when resetting RFLink Mega
+
+//********************************************************************************
+// MQTT Discovery parameters
+//********************************************************************************
+#define ENABLE_MQTT_DISCOVERY true						// If defined, enable MQTT discovery publication
+#define MQTT_DISCOVERY_PREFIX "homeassistant/sensor"	// MQTT discovery topic prefix
+#define MQTT_DISCOVERY_SUFFIX "config"					// MQTT discovery topic suffix
 
 
 //********************************************************************************
@@ -129,7 +136,7 @@ This table allows to configure default values for IDs that will be filtered on b
 };
 // Note: ID filtering configuration is now saved in eeprom memory and can be changed online in the /configuration page. This is very useful when a device changes ID in order to keep using the same MQTT topic. If changes are made online, the /configuration page provides directly the new code to update here.
 
-#define CONFIG_VERSION 20210502
+#define CONFIG_VERSION 20211121
 // Changing this number overwrites the configuration in eeprom memory with configuration in this file (config.h).
 // =====>>> In general to be safe, you should always update this number after making changes in this file <<<===== 
 

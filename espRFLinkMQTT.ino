@@ -239,7 +239,75 @@ void buildMqttTopic() {
 	strcat(MQTT_TOPIC,"/");
 	strcat(MQTT_TOPIC,MQTT_NAME);
 	strcat(MQTT_TOPIC,"-");
-	strcat(MQTT_TOPIC,MQTT_ID);;
+	strcat(MQTT_TOPIC,MQTT_ID);
+}
+
+
+/**
+ * Init MQTT discovery variables using field name
+ */
+ 
+void publishMqttDiscoveryConfig(char* field) {
+
+	// MQTT Discovery unique ID
+	MQTT_DISCOVERY_UID[0] = '\0';
+	strcpy(MQTT_DISCOVERY_UID,MQTT_NAME);
+	strcat(MQTT_DISCOVERY_UID,"-");
+	strcat(MQTT_DISCOVERY_UID,MQTT_ID);
+	strcat(MQTT_DISCOVERY_UID,"_");
+	strcat(MQTT_DISCOVERY_UID,field);
+
+	// MQTT Discovery name
+	MQTT_DISCOVERY_NAME[0] = '\0';
+	strcpy(MQTT_DISCOVERY_NAME,MQTT_NAME);
+	strcat(MQTT_DISCOVERY_NAME," ");
+	strcat(MQTT_DISCOVERY_NAME,MQTT_ID);
+	strcat(MQTT_DISCOVERY_NAME," ");
+	strcat(MQTT_DISCOVERY_NAME,field);
+
+	// MQTT Discovery topic
+	MQTT_DISCOVERY_TOPIC[0] = '\0';
+	strcpy(MQTT_DISCOVERY_TOPIC,MQTT_DISCOVERY_PREFIX);
+	strcat(MQTT_DISCOVERY_TOPIC,"/");
+	strcat(MQTT_DISCOVERY_TOPIC,MQTT_PUBLISH_TOPIC);
+	strcat(MQTT_DISCOVERY_TOPIC,"/");
+	strcat(MQTT_DISCOVERY_TOPIC,MQTT_DISCOVERY_UID);
+	strcat(MQTT_DISCOVERY_TOPIC,"/");
+	strcat(MQTT_DISCOVERY_TOPIC,MQTT_DISCOVERY_SUFFIX);
+
+	// MQTT Discovery JSON
+	MQTT_DISCOVERY_JSON[0] = '\0';
+	strcpy(MQTT_DISCOVERY_JSON,"{\"unique_id\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_DISCOVERY_UID);
+	strcat(MQTT_DISCOVERY_JSON,"\",\"name\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_DISCOVERY_NAME);
+	strcat(MQTT_DISCOVERY_JSON,"\",\"device_class\":\"");
+	strcat(MQTT_DISCOVERY_JSON,"temperature");
+	strcat(MQTT_DISCOVERY_JSON,"\",\"unit_of_measurement\":\"");
+	strcat(MQTT_DISCOVERY_JSON,"°C");
+	strcat(MQTT_DISCOVERY_JSON,"\",\"state_topic\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_TOPIC);
+	strcat(MQTT_DISCOVERY_JSON,"\",\"value_template\":\"{{ value_json.");
+	strcat(MQTT_DISCOVERY_JSON,field);
+	strcat(MQTT_DISCOVERY_JSON," }}\",\"device\":{\"identifiers\":[\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_ID);
+	strcat(MQTT_DISCOVERY_JSON,"\"],\"manufacturer\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_NAME);
+	strcat(MQTT_DISCOVERY_JSON,"\",\"model\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_NAME);
+	strcat(MQTT_DISCOVERY_JSON,"_");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_ID);
+	strcat(MQTT_DISCOVERY_JSON,"\",\"name\":\"");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_NAME);
+	strcat(MQTT_DISCOVERY_JSON," ");
+	strcat(MQTT_DISCOVERY_JSON,MQTT_ID);
+	strcat(MQTT_DISCOVERY_JSON,"\"}}");
+
+	if (MQTTClient.publish(MQTT_DISCOVERY_TOPIC,MQTT_DISCOVERY_JSON,true)) {
+		// All is OK
+	} else {
+		DEBUG_PRINTLN(" => MQTT discovery publish failed");
+	};	
 }
 
 /**
@@ -1518,6 +1586,17 @@ void loop() {
 			
 			// construct topic name to publish to
 			buildMqttTopic();
+
+            if (ENABLE_MQTT_DISCOVERY){
+
+				DEBUG_PRINTLN(F("=== MQTT Disocvery enabled ==="));
+				// For each JSON field, build MQTT discovery variables
+				for (int i = 0; i < (int) (sizeof(JSON_FIELDS) / sizeof(JSON_FIELDS[0])); i++){
+					if (strcmp("TEMP", JSON_FIELDS[i]) == 0) {
+						publishMqttDiscoveryConfig(JSON_FIELDS[i]);
+					}
+				}
+			}
 			
 			// report message for debugging
 			printToSerial();

@@ -120,6 +120,7 @@ void readRfLinkFields(char* fields, int start){
         int strpos=start;
         int fldpos=0;
         int valueType=0;
+        int fldcount=0;
 
         JSON[0]='{';
         JSON[1]='\0';
@@ -134,6 +135,9 @@ void readRfLinkFields(char* fields, int start){
                 if(fields[strpos] == '=') {
                         FIELD_BUF[fldpos]='\0';
                         fldpos=0;
+
+                        // Stock field for MQTT discovery publication
+                        strcpy(JSON_FIELDS[fldcount++],FIELD_BUF);
 
                         // Tag field regarding the name...
                         if(RfLinkFieldIsString(FIELD_BUF)) valueType=RFLINK_VALUE_TYPE_STRING;

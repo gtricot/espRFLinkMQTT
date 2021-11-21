@@ -5,6 +5,8 @@
 #define MAX_ID_LEN 10                         	// Maximum size for record id
 #define MAX_DATA_LEN 24                         // Maximum size for record name, json field name and json field value
 #define MAX_TOPIC_LEN 60                        // Maximum topic path size (at least lenght of MQTT_PUBLISH_TOPIC + 2 x MAX_DATA_LEN)
+#define MAX_FIELDS 10                           // Maximum number of fields for a packet
+#define MAX_MQTT_DISCOVERY_JSON_LEN 400         // Maximum size for MQTT discovery JSON message
 
 #include <Arduino.h> 
 
@@ -27,6 +29,7 @@
 // main input / output buffers
 //extern char BUFFER [BUFFER_SIZE];
 extern char JSON   [BUFFER_SIZE];
+extern char JSON_FIELDS   [MAX_FIELDS][MAX_DATA_LEN];
 
 // message builder buffers
 extern char MQTT_NAME[MAX_DATA_LEN];
@@ -35,6 +38,7 @@ extern char FIELD_BUF[MAX_DATA_LEN];
 #ifdef EXPERIMENTAL
 	extern char LINE_NUMBER[3]; // TEST
 #endif
+
 
 //********************************************************************************
 // const strings used in helper functions

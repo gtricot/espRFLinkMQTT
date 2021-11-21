@@ -102,12 +102,19 @@ _matrix matrix[FILTERED_ID_SIZE];
 // main input / output buffers
 char BUFFER [BUFFER_SIZE];
 char JSON   [BUFFER_SIZE];
+char JSON_FIELDS   [MAX_FIELDS][MAX_DATA_LEN];
 
 // message builder buffers
 char MQTT_NAME[MAX_DATA_LEN];
 char MQTT_ID  [MAX_ID_LEN+1];
 char MQTT_TOPIC[MAX_TOPIC_LEN];
 char FIELD_BUF[MAX_DATA_LEN];
+
+// MQTT discovery variables
+char MQTT_DISCOVERY_UID[MAX_DATA_LEN*2+MAX_ID_LEN+1];
+char MQTT_DISCOVERY_NAME[MAX_DATA_LEN*2+MAX_ID_LEN+1];
+char MQTT_DISCOVERY_TOPIC[MAX_TOPIC_LEN];
+char MQTT_DISCOVERY_JSON[MAX_MQTT_DISCOVERY_JSON_LEN];
 
 // Serial iterator counter
 int CPT;
